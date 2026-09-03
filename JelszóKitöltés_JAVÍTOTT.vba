@@ -59,6 +59,9 @@ Sub JelszóKitöltés()
     
     Application.ScreenUpdating = False
     
+    ' KRITIKUS: Randomize minden alkalommal új számokat generáltat
+    Randomize
+    
     For i = 2 To utolsóSor ' A 2. sortól kezdünk (1. sor a fejléc)
         ' Csak az üres cellákba írunk
         If IsEmpty(ws.Cells(i, oszlopIndex)) Then
