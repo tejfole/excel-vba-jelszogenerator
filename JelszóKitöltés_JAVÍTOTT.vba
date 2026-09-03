@@ -41,8 +41,7 @@ Sub JelszóKitöltés()
         speciális = False
     End If
     
-    ' Utolsó sor megkeresése - JAVÍTÁS: az első oszlop helyett az aktuális oszlopban keresünk
-    ' de csak a 2. sortól kezdve (fejléc után)
+    ' Utolsó sor megkeresése
     utolsóSor = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
     
     ' Ha nincs adat, vagy csak fejléc van
@@ -59,15 +58,13 @@ Sub JelszóKitöltés()
     
     Application.ScreenUpdating = False
     
-    ' KRITIKUS: Randomize minden alkalommal új számokat generáltat
-    Randomize
-    
     For i = 2 To utolsóSor ' A 2. sortól kezdünk (1. sor a fejléc)
         ' Csak az üres cellákba írunk
         If IsEmpty(ws.Cells(i, oszlopIndex)) Then
             jelszó = JelszóGenerálás(hossz, speciális)
             ws.Cells(i, oszlopIndex).Value = jelszó
             kitöltöttek = kitöltöttek + 1
+            DoEvents ' Lehetővé teszi az operációs rendszernek a feldolgozást
         Else
             ' Ha már van tartalom, kihagyjuk
             kihagyottak = kihagyottak + 1
@@ -91,6 +88,7 @@ Function JelszóGenerálás(hossz As Integer, Optional speciálisKarakter As Boo
     Dim jelszó As String
     Dim i As Integer
     Dim randomIndex As Integer
+    Dim szám As Double
     
     ' Alapvető karakterek (számok és betűk)
     karakterek = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -102,10 +100,12 @@ Function JelszóGenerálás(hossz As Integer, Optional speciálisKarakter As Boo
     
     jelszó = ""
     
-    ' Jelszó generálása
+    ' Jelszó generálása - Timer-alapú random
     For i = 1 To hossz
-        randomIndex = Int((Len(karakterek) - 1) * Rnd()) + 1
+        szám = CDbl(Timer * 10000) ' Timer-ből véletlen szám
+        randomIndex = (Int(szám) Mod Len(karakterek)) + 1
         jelszó = jelszó & Mid(karakterek, randomIndex, 1)
+        Application.Wait (Now + TimeValue("0:00:00.001")) ' Apró késleltetés
     Next i
     
     JelszóGenerálás = jelszó
