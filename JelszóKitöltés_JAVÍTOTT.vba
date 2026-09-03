@@ -102,10 +102,9 @@ Function JelszóGenerálás(hossz As Integer, Optional speciálisKarakter As Boo
     
     ' Jelszó generálása - Timer-alapú random
     For i = 1 To hossz
-        szám = CDbl(Timer * 10000) ' Timer-ből véletlen szám
+        szám = CDbl(Timer * 10000 + i) ' Timer + sor index = garantált egyedi érték
         randomIndex = (Int(szám) Mod Len(karakterek)) + 1
         jelszó = jelszó & Mid(karakterek, randomIndex, 1)
-        Application.Wait (Now + TimeValue("0:00:00.001")) ' Apró késleltetés
     Next i
     
     JelszóGenerálás = jelszó
